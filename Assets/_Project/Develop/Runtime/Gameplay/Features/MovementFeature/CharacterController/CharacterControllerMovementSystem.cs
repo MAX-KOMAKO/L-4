@@ -3,36 +3,30 @@ using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Systems;
 using Assets._Project.Develop.Runtime.Utilities.Reactive;
 using UnityEngine;
 
-namespace Assets._Project.Develop.Runtime.Gameplay.Features.MovementFeature
+namespace Assets._Project.Develop.Runtime.Gameplay.Features.MovementFeature.CharacterController
 {
-    public class RigidbodyRotationSystem : IInitializableSystem, IUpdatableSystem
+    public class CharacterControllerMovementSystem : IInitializableSystem, IUpdatableSystem
     {
         private const float MinDirectionSqrMagnitude = 0.01f;
-
-        private Transform _transform;
+        private UnityEngine.CharacterController _characterController;
         private ReactiveVariable<Vector3> _moveDirection;
-        private ReactiveVariable<float> _rotationSpeed;
+        private ReactiveVariable<float> _moveSpeed;
 
         public void OnInit(Entity entity)
         {
-            _transform = entity.Transform;
+            _characterController = entity.CharacterController;
             _moveDirection = entity.MoveDirection;
-            _rotationSpeed = entity.RotationSpeed;
+            _moveSpeed = entity.MoveSpeed;
         }
 
         public void OnUpdate(float deltaTime)
         {
             Vector3 direction = _moveDirection.Value;
-
             if (direction.sqrMagnitude <= MinDirectionSqrMagnitude)
                 return;
 
-            Quaternion targetRotation = Quaternion.LookRotation(direction.normalized);
-
-            _transform.rotation = Quaternion.RotateTowards(
-                _transform.rotation,
-                targetRotation,
-                _rotationSpeed.Value * deltaTime);
+            Vector3 motion = direction.normalized * _moveSpeed.Value * deltaTime;
+            _characterController.Move(motion);
         }
     }
 }

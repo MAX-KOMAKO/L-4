@@ -1,5 +1,4 @@
-﻿using Assets._Project.Develop.Runtime.Gameplay.Common;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Mono
 {
@@ -7,10 +6,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Mono
     {
         public void Setup(Entity entity)
         {
-            entity.AddComponent(new TransformComponent { Value = transform });
-
             MonoEntityRegistrator[] registrators = GetComponentsInChildren<MonoEntityRegistrator>();
-
             if (registrators != null)
                 foreach (MonoEntityRegistrator registrator in registrators)
                     registrator.Register(entity);
